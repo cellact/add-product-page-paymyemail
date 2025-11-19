@@ -42,7 +42,7 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
+      <Router basename="/add-product-page">
         <Routes>
           <Route path="/" element={<HomePage walletAddress={walletAddress} showSolanaVerification={showSolanaVerification} />} />
           <Route path="/verify-email" element={<VerifyEmail walletAddress={walletAddress} />} />

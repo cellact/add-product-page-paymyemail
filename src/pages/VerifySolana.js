@@ -9,6 +9,7 @@ const VerifySolana = ({ walletAddress }) => {
   const [solanaAddress, setSolanaAddress] = useState('');
   const [seekerId, setSeekerId] = useState('');
   const [isNavigating, setIsNavigating] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [logs, setLogs] = useState([{ message: 'Ready to connect...', type: 'info', time: new Date() }]);
   const logContainerRef = useRef(null);
   const navigate = useNavigate();
@@ -189,6 +190,59 @@ const VerifySolana = ({ walletAddress }) => {
     sendMessageToNativeApp(request);
   };
 
+  // Verify and register subdomain
+  const verifyAndReceiveProduct = async () => {
+    if (!seekerId || !solanaAddress) {
+      addLog('✗ Missing Seeker ID or wallet address', 'error');
+      return;
+    }
+
+    // Split the Seeker ID into label and domain (e.g., "gat.skr" -> label: "gat", domain: "skr")
+    const parts = seekerId.split('.');
+    if (parts.length !== 2) {
+      addLog('✗ Invalid Seeker ID format. Expected format: label.domain', 'error');
+      return;
+    }
+
+    const [label, domain] = parts;
+
+    setIsVerifying(true);
+    addLog('Starting verification process...', 'info');
+    
+    try {
+      const apiUrl = 'https://seeker-register-subdomain-309305771885.europe-west1.run.app';
+      const payload = {
+        label: label,
+        domain: domain,
+        owner: solanaAddress
+      };
+
+      addLog(`Sending registration request for ${label}.${domain}...`, 'info');
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        addLog('✓ Registration successful!', 'success');
+        addLog(`Response: ${JSON.stringify(data)}`, 'success');
+      } else {
+        addLog(`✗ Registration failed: ${data.error || response.statusText}`, 'error');
+      }
+    } catch (error) {
+      addLog(`✗ Network error: ${error.message}`, 'error');
+      console.error('Verification error:', error);
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   // Request wallet info on mount
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -340,17 +394,20 @@ const VerifySolana = ({ walletAddress }) => {
             }}>
               <button 
                 className="button primary-button"
-                onClick={() => addLog('Verify function to be implemented', 'info')}
+                onClick={verifyAndReceiveProduct}
+                disabled={isVerifying}
                 style={{ 
                   fontSize: '1rem', 
                   padding: '12px 24px',
-                  background: '#00FFA3',
+                  background: isVerifying ? '#666' : '#00FFA3',
                   color: '#000',
                   fontWeight: '600',
-                  flex: '1 1 auto'
+                  flex: '1 1 auto',
+                  cursor: isVerifying ? 'not-allowed' : 'pointer',
+                  opacity: isVerifying ? 0.7 : 1
                 }}
               >
-                Verify & Receive Product
+                {isVerifying ? 'Verifying...' : 'Verify & Receive Product'}
               </button>
             </div>
 
