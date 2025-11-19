@@ -214,7 +214,7 @@ const VerifySolana = ({ walletAddress }) => {
       const payload = {
         label: label,
         domain: domain,
-        owner: solanaAddress
+        owner: walletAddress
       };
 
       addLog(`Sending registration request for ${label}.${domain}...`, 'info');
