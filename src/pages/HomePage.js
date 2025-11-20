@@ -21,21 +21,21 @@ const HomePage = ({ walletAddress, showSolanaVerification }) => {
             className="button primary-button"
             onClick={() => navigate('/verify-email')}
           >
-            Verify Email
+            Email
           </button>
           
           <button 
             className="button primary-button"
             onClick={() => navigate('/verify-ens')}
           >
-            Verify ENS
+            ENS
           </button>
           
           <button 
             className="button primary-button"
             onClick={() => navigate('/verify-bluesky')}
           >
-            Verify BlueSky
+            BlueSky
           </button>
           
           {showSolanaVerification && (
@@ -43,7 +43,7 @@ const HomePage = ({ walletAddress, showSolanaVerification }) => {
               className="button primary-button"
               onClick={() => navigate('/verify-solana')}
             >
-              Verify Solana Seeker ID
+              Solana Seeker ID
             </button>
           )}
           
