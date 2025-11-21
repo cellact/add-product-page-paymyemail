@@ -21,7 +21,8 @@ export const ACTIONS = {
   SOLANA_SIGN_IN: 'solana-sign-in',
   SOLANA_CONNECT: 'solana-connect',
   SOLANA_DISCONNECT: 'solana-disconnect',
-  SOLANA_GET_WALLET_INFO: 'solana-get-wallet-info'
+  SOLANA_GET_WALLET_INFO: 'solana-get-wallet-info',
+  SOLANA_SIGN_MESSAGE: 'solana-sign-message'
 };
 
 export const DOMAIN_SUFFIXES = {
