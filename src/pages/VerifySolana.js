@@ -9,12 +9,14 @@ const VerifySolana = ({ walletAddress }) => {
   const [seekerId, setSeekerId] = useState('');
   const [isNavigating, setIsNavigating] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [isSigning, setIsSigning] = useState(false);
-  const [hasSigned, setHasSigned] = useState(false);
-  const [signature, setSignature] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
+
+  // Add log entry (for debugging only, not displayed)
+  const addLog = (message, type = 'info') => {
+    console.log(`[${type.toUpperCase()}] ${message}`);
+  };
 
   // Send message to native app using controller
   const sendMessageToNativeApp = (jsonData) => {
@@ -22,7 +24,7 @@ const VerifySolana = ({ walletAddress }) => {
       window.top.controller.sendMessageToNativeApp(jsonData);
     } else {
       console.error('Controller not available');
-      setErrorMessage('Native interface not available');
+      addLog('Native interface not available', 'error');
     }
   };
 
@@ -43,13 +45,11 @@ const VerifySolana = ({ walletAddress }) => {
             handleSolanaResponse('solana-disconnected', body['solana-disconnected']);
           } else if (body['solana-wallet-info']) {
             handleSolanaResponse('solana-wallet-info', body['solana-wallet-info']);
-          } else if (body['solana-message-signed']) {
-            handleSolanaResponse('solana-message-signed', body['solana-message-signed']);
           }
         }
       } catch (error) {
         console.error('Error handling native response:', error);
-        setErrorMessage(`Error: ${error.message}`);
+        addLog(`Error: ${error.message}`, 'error');
       }
     };
 
@@ -59,7 +59,7 @@ const VerifySolana = ({ walletAddress }) => {
 
   // Handle different types of Solana responses
   const handleSolanaResponse = (action, data) => {
-    console.log(`Received: ${action}`, data);
+    addLog(`Received: ${action}`, 'info');
     
     try {
       const result = typeof data === 'string' ? JSON.parse(data) : data;
@@ -77,62 +77,53 @@ const VerifySolana = ({ walletAddress }) => {
         case 'solana-wallet-info':
           handleWalletInfo(result);
           break;
-        case 'solana-message-signed':
-          handleSignatureResult(result);
-          break;
         default:
           break;
       }
     } catch (error) {
-      console.error(`Error parsing response: ${error.message}`);
-      setErrorMessage(`Error parsing response: ${error.message}`);
+      addLog(`Error parsing response: ${error.message}`, 'error');
     }
   };
 
   // Handle sign-in result
   const handleSignInResult = (result) => {
     if (result.success) {
+      addLog('✓ Signed in successfully!', 'success');
       setIsConnected(true);
       setSolanaAddress(result.walletAddress || '');
       setSeekerId(result.seekerId || 'Not available');
-      setStatusMessage('Connected successfully!');
-      setErrorMessage('');
     } else {
-      setErrorMessage(`Connection failed: ${result.error}`);
+      addLog(`✗ Sign-in failed: ${result.error}`, 'error');
     }
   };
 
   // Handle connect result
   const handleConnectResult = (result) => {
     if (result.success) {
+      addLog('✓ Connected to wallet!', 'success');
       setIsConnected(true);
       setSolanaAddress(result.walletAddress || '');
       setSeekerId(result.seekerId || 'Not available');
-      setStatusMessage('Connected successfully!');
-      setErrorMessage('');
     } else {
-      setErrorMessage(`Connection failed: ${result.error}`);
+      addLog(`✗ Connection failed: ${result.error}`, 'error');
     }
   };
 
   // Handle disconnect result
   const handleDisconnectResult = (result) => {
     if (result.success) {
+      addLog('✓ Disconnected from wallet', 'success');
       setIsConnected(false);
       setSolanaAddress('');
       setSeekerId('');
-      setHasSigned(false);
-      setSignature('');
-      setStatusMessage('');
-      setErrorMessage('');
     } else {
-      setErrorMessage('Disconnect failed');
+      addLog('✗ Disconnect failed', 'error');
     }
   };
 
   // Handle wallet info result
   const handleWalletInfo = (result) => {
-    console.log('Wallet info:', result);
+    addLog(`Wallet info: Connected=${result.isConnected}`, 'info');
     if (result.isConnected) {
       setIsConnected(true);
       setSolanaAddress(result.walletAddress || '');
@@ -144,23 +135,9 @@ const VerifySolana = ({ walletAddress }) => {
     }
   };
 
-  // Handle signature result
-  const handleSignatureResult = (result) => {
-    setIsSigning(false);
-    if (result.success) {
-      setHasSigned(true);
-      setSignature(result.signature || '');
-      setStatusMessage('Message signed successfully!');
-      setErrorMessage('');
-    } else {
-      setErrorMessage(`Signature failed: ${result.error || 'Unknown error'}`);
-    }
-  };
-
   // Sign in with Solana
   const signInWithSolana = () => {
-    setStatusMessage('Connecting to wallet...');
-    setErrorMessage('');
+    addLog('Requesting Sign In with Solana...', 'info');
     const request = {
       action: ACTIONS.SOLANA_SIGN_IN,
       body: {
@@ -173,8 +150,7 @@ const VerifySolana = ({ walletAddress }) => {
 
   // Connect to wallet
   const connectWallet = () => {
-    setStatusMessage('Connecting to wallet...');
-    setErrorMessage('');
+    addLog('Connecting to wallet...', 'info');
     const request = {
       action: ACTIONS.SOLANA_CONNECT,
       body: {}
@@ -184,7 +160,7 @@ const VerifySolana = ({ walletAddress }) => {
 
   // Disconnect from wallet
   const disconnectWallet = () => {
-    setStatusMessage('Disconnecting...');
+    addLog('Disconnecting from wallet...', 'info');
     const request = {
       action: ACTIONS.SOLANA_DISCONNECT,
       body: {}
@@ -194,6 +170,7 @@ const VerifySolana = ({ walletAddress }) => {
 
   // Get wallet info
   const getWalletInfo = () => {
+    addLog('Requesting wallet info...', 'info');
     const request = {
       action: ACTIONS.SOLANA_GET_WALLET_INFO,
       body: {}
@@ -201,48 +178,38 @@ const VerifySolana = ({ walletAddress }) => {
     sendMessageToNativeApp(request);
   };
 
-  // Sign message
-  const signMessage = () => {
-    setIsSigning(true);
-    setErrorMessage('');
-    setStatusMessage('Requesting signature...');
-    const message = `Verify ownership of ${seekerId} for Arnacon registration`;
-    const request = {
-      action: ACTIONS.SOLANA_SIGN_MESSAGE,
-      body: {
-        message: message
-      }
-    };
-    sendMessageToNativeApp(request);
-  };
-
   // Verify and register subdomain
   const verifyAndReceiveProduct = async () => {
     if (!seekerId || !solanaAddress) {
-      setErrorMessage('Missing Seeker ID or wallet address');
+      setStatusMessage('Missing Seeker ID or wallet address');
+      addLog('✗ Missing Seeker ID or wallet address', 'error');
       return;
     }
 
     // Split the Seeker ID into label and domain (e.g., "gat.skr" -> label: "gat", domain: "skr")
     const parts = seekerId.split('.');
     if (parts.length !== 2) {
-      setErrorMessage('Invalid Seeker ID format. Expected format: label.domain');
+      setStatusMessage('Invalid Seeker ID format. Expected: label.domain');
+      addLog('✗ Invalid Seeker ID format. Expected format: label.domain', 'error');
       return;
     }
 
     const [label, domain] = parts;
 
     setIsVerifying(true);
-    setErrorMessage('');
-    setStatusMessage('Verifying and registering...');
+    setStatusMessage('');
+    setShowSuccess(false);
+    addLog('Starting verification process...', 'info');
     
     try {
       const apiUrl = 'https://seeker-register-subdomain-309305771885.europe-west1.run.app';
       const payload = {
         label: label,
         domain: domain,
-        owner: walletAddress
+        owner: solanaAddress
       };
+
+      addLog(`Sending registration request for ${label}.${domain}...`, 'info');
       
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -255,15 +222,17 @@ const VerifySolana = ({ walletAddress }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setStatusMessage('✓ Registration successful! Your product has been verified.');
-        setErrorMessage('');
-      } else {
-        setErrorMessage(`Registration failed: ${data.error || response.statusText}`);
+        setShowSuccess(true);
         setStatusMessage('');
+        addLog('✓ Registration successful!', 'success');
+        addLog(`Response: ${JSON.stringify(data)}`, 'success');
+      } else {
+        setStatusMessage(data.error || 'Registration failed. Please try again.');
+        addLog(`✗ Registration failed: ${data.error || response.statusText}`, 'error');
       }
     } catch (error) {
-      setErrorMessage(`Network error: ${error.message}`);
-      setStatusMessage('');
+      setStatusMessage('Network error. Please check your connection and try again.');
+      addLog(`✗ Network error: ${error.message}`, 'error');
       console.error('Verification error:', error);
     } finally {
       setIsVerifying(false);
@@ -306,18 +275,20 @@ const VerifySolana = ({ walletAddress }) => {
       <div className="card" style={{ 
         width: '100%',
         maxWidth: '480px',
+        margin: '0 auto',
         padding: '32px 24px',
         boxSizing: 'border-box'
       }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '12px' }}>🦊</div>
           <h1 style={{ 
             fontSize: '1.75rem',
             margin: '0 0 8px 0',
             color: '#00FFA3',
             fontWeight: '700'
           }}>
-            🦊 Solana Seeker
+            Solana Seeker
           </h1>
           <p style={{ 
             fontSize: '0.95rem',
@@ -327,35 +298,51 @@ const VerifySolana = ({ walletAddress }) => {
             Verify your wallet to receive your product
           </p>
         </div>
-        
-        {/* Status and Error Messages */}
-        {statusMessage && (
+
+        {/* Success Message */}
+        {showSuccess && (
           <div style={{
-            background: 'rgba(0, 255, 163, 0.1)',
-            border: '1px solid #00FFA3',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            marginBottom: '20px',
-            fontSize: '0.9rem',
-            color: '#00FFA3',
+            background: 'linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(0, 255, 163, 0.05))',
+            border: '2px solid #00FFA3',
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '24px',
             textAlign: 'center'
           }}>
-            {statusMessage}
+            <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>✓</div>
+            <p style={{ 
+              fontSize: '1.1rem',
+              fontWeight: '600',
+              color: '#00FFA3',
+              margin: '0 0 8px 0'
+            }}>
+              Registration Successful!
+            </p>
+            <p style={{ 
+              fontSize: '0.9rem',
+              color: '#aaa',
+              margin: 0,
+              lineHeight: '1.5'
+            }}>
+              Your Seeker ID has been verified and registered successfully.
+            </p>
           </div>
         )}
-        
-        {errorMessage && (
+
+        {/* Error Message */}
+        {statusMessage && (
           <div style={{
             background: 'rgba(255, 68, 68, 0.1)',
             border: '1px solid #FF4444',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            marginBottom: '20px',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '24px',
             fontSize: '0.9rem',
             color: '#FF4444',
-            textAlign: 'center'
+            textAlign: 'center',
+            lineHeight: '1.5'
           }}>
-            {errorMessage}
+            {statusMessage}
           </div>
         )}
         
@@ -363,7 +350,7 @@ const VerifySolana = ({ walletAddress }) => {
         {!isConnected && (
           <>
             <div style={{
-              background: 'rgba(30, 42, 58, 0.5)',
+              background: 'linear-gradient(135deg, rgba(30, 42, 58, 0.8), rgba(30, 42, 58, 0.4))',
               borderRadius: '12px',
               padding: '24px',
               marginBottom: '24px',
@@ -396,15 +383,25 @@ const VerifySolana = ({ walletAddress }) => {
                 className="button primary-button"
                 onClick={signInWithSolana}
                 style={{ 
+                  width: '100%',
                   fontSize: '1rem', 
                   padding: '16px 24px',
-                  background: '#00FFA3',
+                  background: 'linear-gradient(135deg, #00FFA3, #00CC82)',
                   color: '#000',
                   fontWeight: '600',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   border: 'none',
                   cursor: 'pointer',
-                  transition: 'all 0.2s'
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  boxShadow: '0 4px 12px rgba(0, 255, 163, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 6px 16px rgba(0, 255, 163, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(0, 255, 163, 0.3)';
                 }}
               >
                 Sign In with Solana
@@ -414,22 +411,23 @@ const VerifySolana = ({ walletAddress }) => {
                 className="button secondary-button"
                 onClick={connectWallet}
                 style={{ 
+                  width: '100%',
                   fontSize: '0.9rem', 
                   padding: '14px 20px',
-                  borderRadius: '8px'
+                  borderRadius: '12px'
                 }}
               >
-                Connect Wallet
+                Connect Wallet (Simple)
               </button>
             </div>
           </>
         )}
 
-        {/* Connected - Need Signature View */}
-        {isConnected && !hasSigned && (
+        {/* Connected View */}
+        {isConnected && (
           <>
             <div style={{
-              background: 'rgba(30, 42, 58, 0.5)',
+              background: 'linear-gradient(135deg, rgba(30, 42, 58, 0.8), rgba(30, 42, 58, 0.4))',
               borderRadius: '12px',
               padding: '20px',
               marginBottom: '24px'
@@ -437,7 +435,7 @@ const VerifySolana = ({ walletAddress }) => {
               <div style={{
                 display: 'inline-block',
                 padding: '6px 12px',
-                borderRadius: '6px',
+                borderRadius: '8px',
                 fontSize: '0.75rem',
                 background: '#00FFA3',
                 color: '#000',
@@ -465,7 +463,9 @@ const VerifySolana = ({ walletAddress }) => {
                   fontSize: '0.875rem',
                   wordBreak: 'break-all',
                   color: '#fff'
-                }}>
+                }}
+                  title={solanaAddress}
+                >
                   {getTruncatedAddress(solanaAddress)}
                 </p>
               </div>
@@ -492,188 +492,89 @@ const VerifySolana = ({ walletAddress }) => {
               </div>
             </div>
 
-            <div style={{
-              background: 'rgba(0, 255, 163, 0.05)',
-              borderRadius: '12px',
-              padding: '20px',
-              marginBottom: '24px',
-              textAlign: 'center'
-            }}>
-              <p style={{ 
-                fontSize: '0.95rem', 
-                marginBottom: '8px', 
-                fontWeight: '600',
-                color: '#fff'
-              }}>
-                Verify Ownership
-              </p>
-              <p style={{ 
-                fontSize: '0.85rem', 
-                color: '#aaa', 
-                lineHeight: '1.5',
-                margin: 0
-              }}>
-                Sign a message to verify you own this wallet. This signature is used for authentication only.
-              </p>
-            </div>
-
-            <button 
-              className="button primary-button"
-              onClick={signMessage}
-              disabled={isSigning}
-              style={{ 
-                width: '100%',
-                fontSize: '1rem', 
-                padding: '16px 24px',
-                background: isSigning ? '#666' : '#00FFA3',
-                color: '#000',
-                fontWeight: '600',
-                borderRadius: '8px',
-                border: 'none',
-                cursor: isSigning ? 'not-allowed' : 'pointer',
-                opacity: isSigning ? 0.7 : 1,
-                marginBottom: '12px',
-                transition: 'all 0.2s'
-              }}
-            >
-              {isSigning ? 'Signing...' : 'Sign Message'}
-            </button>
-
-            <button 
-              className="button secondary-button"
-              onClick={disconnectWallet}
-              style={{ 
-                width: '100%',
-                fontSize: '0.875rem', 
-                padding: '12px 20px',
-                borderRadius: '8px'
-              }}
-            >
-              Disconnect
-            </button>
-          </>
-        )}
-
-        {/* Connected and Signed - Ready to Verify View */}
-        {isConnected && hasSigned && (
-          <>
-            <div style={{
-              background: 'rgba(30, 42, 58, 0.5)',
-              borderRadius: '12px',
-              padding: '20px',
-              marginBottom: '24px'
-            }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '16px'
-              }}>
-                <div style={{
-                  display: 'inline-block',
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  fontSize: '0.75rem',
-                  background: '#00FFA3',
+            {!showSuccess && (
+              <button 
+                className="button primary-button"
+                onClick={verifyAndReceiveProduct}
+                disabled={isVerifying}
+                style={{ 
+                  width: '100%',
+                  fontSize: '1rem', 
+                  padding: '16px 24px',
+                  background: isVerifying ? '#666' : 'linear-gradient(135deg, #00FFA3, #00CC82)',
                   color: '#000',
                   fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  Connected
-                </div>
-                <div style={{
-                  display: 'inline-block',
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  fontSize: '0.75rem',
-                  background: 'rgba(0, 255, 163, 0.2)',
-                  color: '#00FFA3',
-                  fontWeight: '600',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  Verified
-                </div>
-              </div>
+                  borderRadius: '12px',
+                  border: 'none',
+                  cursor: isVerifying ? 'not-allowed' : 'pointer',
+                  opacity: isVerifying ? 0.7 : 1,
+                  marginBottom: '12px',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  boxShadow: isVerifying ? 'none' : '0 4px 12px rgba(0, 255, 163, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isVerifying) {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 16px rgba(0, 255, 163, 0.4)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isVerifying) {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(0, 255, 163, 0.3)';
+                  }
+                }}
+              >
+                {isVerifying ? (
+                  <>
+                    <span style={{ 
+                      display: 'inline-block',
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid #000',
+                      borderTopColor: 'transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 0.8s linear infinite',
+                      marginRight: '8px',
+                      verticalAlign: 'middle'
+                    }}></span>
+                    Processing...
+                  </>
+                ) : 'Verify & Receive Product'}
+              </button>
+            )}
+
+            <div style={{ 
+              display: 'flex', 
+              gap: '12px',
+              marginTop: '12px'
+            }}>
+              <button 
+                className="button secondary-button"
+                onClick={getWalletInfo}
+                style={{ 
+                  flex: 1,
+                  fontSize: '0.875rem', 
+                  padding: '12px 16px',
+                  borderRadius: '12px'
+                }}
+              >
+                Refresh
+              </button>
               
-              <div style={{ marginBottom: '12px' }}>
-                <p style={{ 
-                  margin: '0 0 4px 0', 
-                  fontSize: '0.75rem',
-                  color: '#888',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  Wallet Address
-                </p>
-                <p style={{ 
-                  margin: 0,
-                  fontFamily: 'monospace', 
-                  fontSize: '0.875rem',
-                  wordBreak: 'break-all',
-                  color: '#fff'
-                }}>
-                  {getTruncatedAddress(solanaAddress)}
-                </p>
-              </div>
-              
-              <div>
-                <p style={{ 
-                  margin: '0 0 4px 0', 
-                  fontSize: '0.75rem',
-                  color: '#888',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  Seeker ID
-                </p>
-                <p style={{ 
-                  margin: 0,
-                  fontFamily: 'monospace', 
-                  fontSize: '0.875rem',
-                  color: '#00FFA3',
-                  fontWeight: '600'
-                }}>
-                  {seekerId}
-                </p>
-              </div>
+              <button 
+                className="button secondary-button"
+                onClick={disconnectWallet}
+                style={{ 
+                  flex: 1,
+                  fontSize: '0.875rem', 
+                  padding: '12px 16px',
+                  borderRadius: '12px'
+                }}
+              >
+                Disconnect
+              </button>
             </div>
-
-            <button 
-              className="button primary-button"
-              onClick={verifyAndReceiveProduct}
-              disabled={isVerifying}
-              style={{ 
-                width: '100%',
-                fontSize: '1rem', 
-                padding: '16px 24px',
-                background: isVerifying ? '#666' : '#00FFA3',
-                color: '#000',
-                fontWeight: '600',
-                borderRadius: '8px',
-                border: 'none',
-                cursor: isVerifying ? 'not-allowed' : 'pointer',
-                opacity: isVerifying ? 0.7 : 1,
-                marginBottom: '12px',
-                transition: 'all 0.2s'
-              }}
-            >
-              {isVerifying ? 'Processing...' : 'Receive Product'}
-            </button>
-
-            <button 
-              className="button secondary-button"
-              onClick={disconnectWallet}
-              style={{ 
-                width: '100%',
-                fontSize: '0.875rem', 
-                padding: '12px 20px',
-                borderRadius: '8px'
-              }}
-            >
-              Disconnect
-            </button>
           </>
         )}
 
@@ -692,13 +593,20 @@ const VerifySolana = ({ walletAddress }) => {
             style={{ 
               fontSize: '0.875rem', 
               padding: '10px 24px',
-              borderRadius: '8px'
+              borderRadius: '12px'
             }}
           >
             ← Back to Home
           </button>
         </div>
       </div>
+
+      {/* Add spinner animation */}
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

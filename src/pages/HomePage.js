@@ -38,6 +38,13 @@ const HomePage = ({ walletAddress, showSolanaVerification }) => {
             BlueSky
           </button>
           
+          <button 
+            className="button primary-button"
+            onClick={() => navigate('/temp-product')}
+          >
+            Temp Identity
+          </button>
+
           {showSolanaVerification && (
             <button 
               className="button primary-button"
@@ -46,13 +53,6 @@ const HomePage = ({ walletAddress, showSolanaVerification }) => {
               Solana Seeker ID
             </button>
           )}
-          
-          <button 
-            className="button primary-button"
-            onClick={() => navigate('/temp-product')}
-          >
-            Get Temp Product
-          </button>
         </div>
       </div>
     </div>
