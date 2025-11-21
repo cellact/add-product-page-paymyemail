@@ -206,7 +206,7 @@ const VerifySolana = ({ walletAddress }) => {
       const payload = {
         label: label,
         domain: domain,
-        owner: solanaAddress
+        owner: walletAddress
       };
 
       addLog(`Sending registration request for ${label}.${domain}...`, 'info');
@@ -444,7 +444,7 @@ const VerifySolana = ({ walletAddress }) => {
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px'
               }}>
-                Connected
+                Signed In
               </div>
               
               <div style={{ marginBottom: '12px' }}>
@@ -510,7 +510,10 @@ const VerifySolana = ({ walletAddress }) => {
                   opacity: isVerifying ? 0.7 : 1,
                   marginBottom: '12px',
                   transition: 'transform 0.2s, box-shadow 0.2s',
-                  boxShadow: isVerifying ? 'none' : '0 4px 12px rgba(0, 255, 163, 0.3)'
+                  boxShadow: isVerifying ? 'none' : '0 4px 12px rgba(0, 255, 163, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
                 onMouseEnter={(e) => {
                   if (!isVerifying) {
@@ -535,8 +538,7 @@ const VerifySolana = ({ walletAddress }) => {
                       borderTopColor: 'transparent',
                       borderRadius: '50%',
                       animation: 'spin 0.8s linear infinite',
-                      marginRight: '8px',
-                      verticalAlign: 'middle'
+                      marginRight: '8px'
                     }}></span>
                     Processing...
                   </>
