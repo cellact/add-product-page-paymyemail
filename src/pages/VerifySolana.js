@@ -281,7 +281,6 @@ const VerifySolana = ({ walletAddress }) => {
       }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '12px' }}>🦊</div>
           <h1 style={{ 
             fontSize: '1.75rem',
             margin: '0 0 8px 0',
