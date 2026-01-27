@@ -40,9 +40,9 @@ const HomePage = ({ walletAddress, showSolanaVerification }) => {
           
           <button 
             className="button primary-button"
-            onClick={() => navigate('/temp-product')}
+            onClick={() => navigate('/private-product')}
           >
-            Temp Identity
+            Private Identity
           </button>
 
           {showSolanaVerification && (

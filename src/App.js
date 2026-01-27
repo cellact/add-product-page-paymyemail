@@ -5,7 +5,7 @@ import VerifyEmail from './pages/VerifyEmail';
 import VerifyENS from './pages/VerifyENS';
 import BuyProduct from './pages/BuyProduct';
 import HomePage from './pages/HomePage';
-import TempProduct from './pages/TempProduct';
+import PrivateProduct from './pages/PrivateProduct';
 import VerifyBlueSky from './pages/VerifyBlueSky';
 import VerifySolana from './pages/VerifySolana';
 // import GameSelection from './pages/GameSelection';
@@ -52,7 +52,7 @@ function App() {
             <Route path="/verify-solana" element={<VerifySolana walletAddress={walletAddress} />} />
           )}
           <Route path="/buy-product" element={<BuyProduct walletAddress={walletAddress} />} />
-          <Route path="/temp-product" element={<TempProduct walletAddress={walletAddress} />} />
+          <Route path="/private-product" element={<PrivateProduct walletAddress={walletAddress} />} />
           {/* <Route path="/game-selection" element={<GameSelection walletAddress={walletAddress} />} /> */}
         </Routes>
       </Router>

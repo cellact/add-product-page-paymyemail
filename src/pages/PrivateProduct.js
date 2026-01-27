@@ -4,7 +4,7 @@ import { generateRandomNames, generateUUID } from '../components/GenerateUUID';
 import { API_ENDPOINTS, ACTIONS, DOMAIN_SUFFIXES, PACKAGE_TYPES, REQUEST_CONFIG, UI_CONFIG } from '../utils/DefaultParameters';
 import '../styles/Common.css';
 
-const TempProduct = ({ walletAddress }) => {
+const PrivateProduct = ({ walletAddress }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -99,8 +99,8 @@ const TempProduct = ({ walletAddress }) => {
       setIsSuccess(true);
       
     } catch (error) {
-      console.error('Error getting temporary product:', error);
-      setError(error.message || 'An error occurred while getting the temporary product');
+      console.error('Error getting private product:', error);
+      setError(error.message || 'An error occurred while getting the private product');
       setIsLoading(false);
     }
   };
@@ -179,7 +179,7 @@ const TempProduct = ({ walletAddress }) => {
             color: 'var(--primary-color)',
             fontWeight: '600',
             textAlign: 'center'
-          }}>{isSuccess ? 'Success!' : 'Get Temporary Product'}</h1>
+          }}>{isSuccess ? 'Success!' : 'Get Private Product'}</h1>
         </div>
         
         {!isProcessing ? (
@@ -195,7 +195,7 @@ const TempProduct = ({ walletAddress }) => {
               boxSizing: 'border-box',
               margin: '0 auto'
             }}>
-              <p style={{ margin: '0 0 15px 0' }}>Choose your preferred temporary username from the options below:</p>
+              <p style={{ margin: '0 0 15px 0' }}>Choose your preferred private username from the options below:</p>
               {renderNameSelectionButtons()}
             </div>
             
@@ -308,4 +308,4 @@ const TempProduct = ({ walletAddress }) => {
   );
 };
 
-export default TempProduct; 
+export default PrivateProduct; 
