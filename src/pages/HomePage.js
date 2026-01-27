@@ -32,7 +32,7 @@ const HomePage = ({ walletAddress, showSolanaVerification }) => {
           </button>
           
           <button 
-            className="button primary-button"
+            className="button primary-button hidden-button"
             onClick={() => navigate('/verify-bluesky')}
           >
             BlueSky
