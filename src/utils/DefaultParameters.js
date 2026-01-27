@@ -127,7 +127,10 @@ export const IDENTITY_WORDS = {
     "Umbra", "Vortex", "Wispy", "Xeno", "Yonder", "Zephyr", "Astral", "Blazed",
     "Copper", "Dusty", "Ember", "Flaming", "Granite", "Hollow", "Ivory", "Jeweled",
     "Krypton", "Lustrous", "Mercury", "Nebula", "Obsidian", "Phantom", "Quasar", "Rogue",
-    "Savage", "Tempest", "Umber", "Vapor", "Warp", "Xray"
+    "Savage", "Tempest", "Umber", "Vapor", "Warp", "Xray",
+    // Easter eggs
+    "Dark", "Gotham", "Arkham", "Caped", "Masked", "Nocturnal", "Vigilant", "Brooding",
+    "Stealthy", "Vengeance"
   ],
   NOUNS: [
     // Original 46
@@ -150,7 +153,10 @@ export const IDENTITY_WORDS = {
     "Uranus", "Vulcan", "Wolf", "Xander", "Yakuza", "Zeus", "Abyss", "Bolt",
     "Crater", "Dome", "Essence", "Fang", "Griffin", "Halo", "Ion", "Jewel",
     "Kodiak", "Lancer", "Mirage", "Nimbus", "Onyx", "Pulse", "Quantum", "Ridge",
-    "Saber", "Trident", "Umbra", "Vector"
+    "Saber", "Trident", "Umbra", "Vector",
+    // Easter eggs
+    "Wayne", "Alfred", "Robin", "Batcave", "Penguin", "Riddler", "Bane", "Scarecrow",
+    "Catwoman", "Gotham", "Asylum", "Gargoyle", "Manor", "Signal", "Crusader"
   ]
 };
 
