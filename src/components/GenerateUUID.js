@@ -1,24 +1,11 @@
 // Client-side implementation of the name generator
 // This version works entirely in the browser without a server
 
-// Word lists
-const adjectives = [
-    "Swift", "Bright", "Clever", "Daring", "Eager", "Fancy", "Gentle", "Happy", 
-    "Icy", "Jolly", "Kind", "Lively", "Mighty", "Noble", "Orange", "Purple", 
-    "Quick", "Royal", "Shiny", "Tiny", "Unique", "Vivid", "Witty", "Xtra", 
-    "Young", "Zesty", "Brave", "Calm", "Deep", "Epic", "Fresh", "Grand", 
-    "Huge", "Ideal", "Jumpy", "Keen", "Lucky", "Magic", "Neat", "Odd", 
-    "Prime", "Quiet", "Rich", "Super", "Tall"
-  ];
-  
-  const nouns = [
-    "Apple", "Banana", "Cloud", "Dragon", "Eagle", "Falcon", "Galaxy", "Harbor", 
-    "Island", "Jungle", "Knight", "Lemon", "Mountain", "Ninja", "Ocean", "Panda", 
-    "Quest", "River", "Storm", "Tiger", "Unicorn", "Valley", "Wizard", "Xenon", 
-    "Yacht", "Zebra", "Arrow", "Breeze", "Comet", "Dolphin", "Echo", "Forest", 
-    "Giraffe", "Hawk", "Igloo", "Jaguar", "Koala", "Lion", "Mango", "Neptune", 
-    "Orbit", "Phoenix", "Quasar", "Rocket", "Sapphire", "Thunder"
-  ];
+import { IDENTITY_WORDS } from '../utils/DefaultParameters';
+
+// Word lists from centralized config
+const adjectives = IDENTITY_WORDS.ADJECTIVES;
+const nouns = IDENTITY_WORDS.NOUNS;
   
   // Generate a random number ID of specified length
   function generateNumericId(length = 6) {
