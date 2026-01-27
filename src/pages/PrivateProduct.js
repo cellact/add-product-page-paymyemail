@@ -195,7 +195,11 @@ const PrivateProduct = ({ walletAddress }) => {
               boxSizing: 'border-box',
               margin: '0 auto'
             }}>
-              <p style={{ margin: '0 0 15px 0' }}>Choose your preferred private username from the options below:</p>
+              <p style={{ margin: '0 0 8px 0' }}>Choose your preferred private identity from the options below:</p>
+              <p style={{ margin: '0 0 15px 0', fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '1rem' }}>🔒</span>
+                with private identity no one can know it's you..
+              </p>
               {renderNameSelectionButtons()}
             </div>
             
