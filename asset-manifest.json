@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/add-product-page-paymyemail/static/css/main.5f4ded6d.css",
-    "main.js": "/add-product-page-paymyemail/static/js/main.5a762feb.js",
+    "main.js": "/add-product-page-paymyemail/static/js/main.d7bccc25.js",
     "static/js/5149.e0e32685.chunk.js": "/add-product-page-paymyemail/static/js/5149.e0e32685.chunk.js",
     "static/js/8126.f59552c4.chunk.js": "/add-product-page-paymyemail/static/js/8126.f59552c4.chunk.js",
     "static/js/5465.c99bc32c.chunk.js": "/add-product-page-paymyemail/static/js/5465.c99bc32c.chunk.js",
@@ -99,7 +99,7 @@
     "static/media/index.cjs": "/add-product-page-paymyemail/static/media/index.d5b35ece7c425af5eaae.cjs",
     "index.html": "/add-product-page-paymyemail/index.html",
     "main.5f4ded6d.css.map": "/add-product-page-paymyemail/static/css/main.5f4ded6d.css.map",
-    "main.5a762feb.js.map": "/add-product-page-paymyemail/static/js/main.5a762feb.js.map",
+    "main.d7bccc25.js.map": "/add-product-page-paymyemail/static/js/main.d7bccc25.js.map",
     "5149.e0e32685.chunk.js.map": "/add-product-page-paymyemail/static/js/5149.e0e32685.chunk.js.map",
     "8126.f59552c4.chunk.js.map": "/add-product-page-paymyemail/static/js/8126.f59552c4.chunk.js.map",
     "5465.c99bc32c.chunk.js.map": "/add-product-page-paymyemail/static/js/5465.c99bc32c.chunk.js.map",
@@ -197,6 +197,6 @@
   },
   "entrypoints": [
     "static/css/main.5f4ded6d.css",
-    "static/js/main.5a762feb.js"
+    "static/js/main.d7bccc25.js"
   ]
 }
