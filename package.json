@@ -2,7 +2,7 @@
   "name": "add-product-html",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://cellact.github.io/add-product-page",
+  "homepage": "https://cellact.github.io/add-product-page-paymyemail",
   "dependencies": {
     "@reown/appkit": "^1.7.0",
     "@reown/appkit-adapter-ethers": "^1.7.0",

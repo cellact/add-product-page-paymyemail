@@ -53,7 +53,22 @@ const VerifyEmail = ({ walletAddress }) => {
       // Get Firebase auth instance
       const auth = getAuth();
       
-      // Send sign-in link to email
+      // FIRST: Create PENDING product in native app (so Flutter can start polling)
+      if (window.Android && window.Android.installProduct) {
+        const productData = {
+          item: emailAddress,
+          packageType: "EMAIL",
+          url: "https://orange-acceptable-mouse-528.mypinata.cloud/ipfs/bafkreickhtxddhcpz72n6yomsbbbdufihzhvsb3v75oj7xub32shmz5uwu",
+          uuid: Date.now().toString(),
+          timestamp: Math.floor(Date.now() / 1000),
+          label: emailAddress
+        };
+        
+        console.log('Creating PENDING email product:', emailAddress);
+        window.Android.installProduct(JSON.stringify(productData));
+      }
+      
+      // THEN: Send sign-in link to email
       await sendSignInLinkToEmail(auth, emailAddress, actionCodeSettings);
       console.log('Email sent successfully');
       
