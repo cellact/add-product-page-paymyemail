@@ -54,19 +54,16 @@ const VerifyEmail = ({ walletAddress }) => {
       const auth = getAuth();
       
       // FIRST: Create PENDING product in native app (so Flutter can start polling)
-      const productData = {
-        item: emailAddress,
-        packageType: "EMAIL",
-        url: "https://orange-acceptable-mouse-528.mypinata.cloud/ipfs/bafkreickhtxddhcpz72n6yomsbbbdufihzhvsb3v75oj7xub32shmz5uwu",
-        uuid: Date.now().toString(),
-        timestamp: Math.floor(Date.now() / 1000),
-        label: emailAddress
-      };
+      // Use minimal format like temp products to ensure it stays PENDING
+      const uuid = Date.now().toString();
       
       console.log('📧 Creating PENDING email product:', emailAddress);
       sendDataToNative({
-        action: 'install-product',
-        body: productData
+        action: ACTIONS.NEW_ITEM,
+        body: {
+          item: emailAddress,
+          customer_id: uuid
+        }
       });
       
       // THEN: Send sign-in link to email
