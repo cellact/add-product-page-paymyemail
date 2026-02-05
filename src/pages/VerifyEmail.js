@@ -50,11 +50,7 @@ const VerifyEmail = ({ walletAddress }) => {
 
       console.log("Action Code Settings:", actionCodeSettings);
 
-      // Get Firebase auth instance
-      const auth = getAuth();
-      
       // FIRST: Create PENDING product in native app (so Flutter can start polling)
-      // Use minimal format like temp products to ensure it stays PENDING
       const uuid = Date.now().toString();
       
       console.log('📧 Creating PENDING email product:', emailAddress);
@@ -65,6 +61,9 @@ const VerifyEmail = ({ walletAddress }) => {
           customer_id: uuid
         }
       });
+      
+      // Get Firebase auth instance
+      const auth = getAuth();
       
       // THEN: Send sign-in link to email
       await sendSignInLinkToEmail(auth, emailAddress, actionCodeSettings);
