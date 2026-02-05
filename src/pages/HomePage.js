@@ -9,50 +9,15 @@ const HomePage = ({ walletAddress, showSolanaVerification }) => {
     <div className="container">
       <div className="card">
         <div className="button-group">
-          <h1>Arnacon Product Portal</h1>
-          <button 
-            className="button primary-button hidden-button"
-            onClick={() => navigate('/buy-product')}
-          >
-            Buy Product
-          </button>
+          <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>Email identity creation portal</h1>
           
           <button 
             className="button primary-button"
             onClick={() => navigate('/verify-email')}
+            style={{ fontSize: '18px', padding: '15px 40px' }}
           >
-            Email
+            Get started
           </button>
-          
-          <button 
-            className="button primary-button"
-            onClick={() => navigate('/verify-ens')}
-          >
-            ENS
-          </button>
-          
-          <button 
-            className="button primary-button hidden-button"
-            onClick={() => navigate('/verify-bluesky')}
-          >
-            BlueSky
-          </button>
-          
-          <button 
-            className="button primary-button"
-            onClick={() => navigate('/private-product')}
-          >
-            Private Identity
-          </button>
-
-          {showSolanaVerification && (
-            <button 
-              className="button primary-button"
-              onClick={() => navigate('/verify-solana')}
-            >
-              Solana Seeker ID
-            </button>
-          )}
         </div>
       </div>
     </div>
