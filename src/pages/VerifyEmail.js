@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FIREBASE_CONFIG, API_ENDPOINTS, ACTIONS } from '../utils/DefaultParameters';
 import '../styles/Common.css';
 
@@ -12,9 +11,7 @@ const VerifyEmail = ({ walletAddress }) => {
   const [error, setError] = useState('');
   const [step, setStep] = useState('input'); // input, success
   const [isLoading, setIsLoading] = useState(false);
-  const [isNavigating, setIsNavigating] = useState(false);
   const [isAddingAnother, setIsAddingAnother] = useState(false);
-  const navigate = useNavigate();
 
   // Firebase configuration
   const firebaseConfig = {
@@ -111,18 +108,6 @@ const VerifyEmail = ({ walletAddress }) => {
 
 
 
-  // Handle go back action
-  const handleBack = () => {
-    if (isNavigating) return;
-    setIsNavigating(true);
-    navigate('/');
-    
-    // Reset navigation flag after a short delay
-    setTimeout(() => {
-      setIsNavigating(false);
-    }, 300);
-  };
-
   // Handle add another email action
   const handleAddAnother = () => {
     if (isAddingAnother) return;
@@ -157,15 +142,7 @@ const VerifyEmail = ({ walletAddress }) => {
               {error && <p className="error-message" style={{ textAlign: 'center' }}>{error}</p>}
             </div>
             
-            <div className="action-buttons" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <button 
-                className="button secondary-button"
-                onClick={handleBack}
-                disabled={isLoading || isNavigating}
-              >
-                Back
-              </button>
-              
+            <div className="action-buttons" style={{ display: 'flex', justifyContent: 'center' }}>
               <button 
                 className={`button primary-button ${isLoading ? 'button-loading' : ''}`}
                 onClick={handleSubmit}
@@ -193,15 +170,7 @@ const VerifyEmail = ({ walletAddress }) => {
               <p>After verification, you can start using your email as your calling identity with Arnacon.</p>
             </div>
             
-            <div className="action-buttons" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <button 
-                className="button primary-button"
-                onClick={handleBack}
-                disabled={isNavigating}
-              >
-                Return to Home
-              </button>
-              
+            <div className="action-buttons" style={{ display: 'flex', justifyContent: 'center' }}>
               <button 
                 className="button secondary-button"
                 onClick={handleAddAnother}
